@@ -5,8 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as morgan from 'morgan';
 import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
-import { APP_FILTER } from '@nestjs/core/constants';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core/constants';
 import { ErrorMessageSerializerFilter } from './filters/generic-error-handler.filter';
+import { MovieModule } from './modules/movie/movie.module';
+import { AuthGuard } from './guards/user.guard';
 
 @Module({
   imports: [
@@ -28,10 +30,15 @@ import { ErrorMessageSerializerFilter } from './filters/generic-error-handler.fi
       }),
     }),
     UserModule,
+    MovieModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
     { provide: APP_FILTER, useClass: ErrorMessageSerializerFilter },
   ],
 })
