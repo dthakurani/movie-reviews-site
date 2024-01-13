@@ -1,8 +1,17 @@
-import { Body, Controller, Param, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { MovieService } from './movie.service';
-import { CreateMovieDto, UpdateMovieDto } from './movie.dto';
+import { CreateMovieDto, FindAllMoviesDto, UpdateMovieDto } from './movie.dto';
 
-@Controller('movie')
+@Controller('movies')
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
@@ -22,5 +31,10 @@ export class MovieController {
     const user = request['user'];
 
     return await this.movieService.update(user, id, body);
+  }
+
+  @Get()
+  async findAll(@Query() query: FindAllMoviesDto) {
+    return await this.movieService.findAll(query);
   }
 }

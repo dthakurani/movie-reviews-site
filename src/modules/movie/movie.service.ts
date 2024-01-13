@@ -44,7 +44,7 @@ export class MovieService {
       throw new CustomException('Movie not found', 'id', HttpStatus.NOT_FOUND);
     }
 
-    // User can only update the movie created by him/her
+    // User can only update the movie created by him
     if (movie.user_id !== user.id) {
       throw new CustomException(
         'Invalid user',
@@ -57,15 +57,42 @@ export class MovieService {
   }
 
   async findAll(query: FindAllMoviesDto) {
-    const { page = 1, limit = 10 } = query;
-    const skip = (page - 1) * limit;
+    const { page, limit } = query;
+    let skip;
 
-    const movies = await this.movieRepository.find({
-      where: { name: ILike(`%${query.query_string}%`) },
-      skip,
-      take: limit,
+    if (page && limit) {
+      skip = (page - 1) * limit;
+    }
+
+    const [movies, count] = await Promise.all([
+      this.movieRepository.find({
+        where: query.query_string
+          ? { name: ILike(`%${query.query_string}%`) }
+          : null,
+        skip,
+        take: limit,
+      }),
+      this.movieRepository.count({
+        where: query.query_string
+          ? { name: ILike(`%${query.query_string}%`) }
+          : null,
+      }),
+    ]);
+
+    return { movies, count, page, limit };
+  }
+
+  async findOne(id: string) {
+    // Check for valid movie
+    const movie = await this.movieRepository.findOne({
+      where: { id },
+      relations: ['reviews'],
     });
 
-    return movies;
+    if (!movie) {
+      throw new CustomException('Movie not found', 'id', HttpStatus.NOT_FOUND);
+    }
+
+    return movie;
   }
 }

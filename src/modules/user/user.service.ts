@@ -32,7 +32,7 @@ export class UserService {
       body.username.toLowerCase() !== userWithEmail.username.toLowerCase()
     ) {
       throw new CustomException(
-        'Invalid username',
+        'Email already exists but username does not match',
         'username',
         HttpStatus.UNAUTHORIZED,
       );

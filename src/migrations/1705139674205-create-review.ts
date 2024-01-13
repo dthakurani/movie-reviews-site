@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateMovie1705127405464 implements MigrationInterface {
+export class CreateReview1705139674205 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.startTransaction();
     try {
       await queryRunner.createTable(
         new Table({
-          name: 'movie',
+          name: 'review',
           columns: [
             {
               name: 'id',
@@ -17,14 +17,8 @@ export class CreateMovie1705127405464 implements MigrationInterface {
               default: 'uuid_generate_v4()',
             },
             {
-              name: 'name',
-              type: 'varchar',
-              isNullable: false,
-              isUnique: true,
-            },
-            {
-              name: 'release_date',
-              type: 'date',
+              name: 'movie_id',
+              type: 'uuid',
               isNullable: false,
             },
             {
@@ -33,16 +27,14 @@ export class CreateMovie1705127405464 implements MigrationInterface {
               isNullable: false,
             },
             {
-              name: 'average_rating',
-              type: 'numeric',
-              isNullable: false,
-              default: 0,
-            },
-            {
-              name: 'review_count',
+              name: 'rating',
               type: 'integer',
               isNullable: false,
-              default: 0,
+            },
+            {
+              name: 'comment',
+              type: 'varchar',
+              isNullable: true,
             },
             {
               name: 'created_at',
@@ -69,6 +61,12 @@ export class CreateMovie1705127405464 implements MigrationInterface {
               referencedColumnNames: ['id'],
               onDelete: 'CASCADE',
             },
+            {
+              columnNames: ['movie_id'],
+              referencedTableName: 'movie',
+              referencedColumnNames: ['id'],
+              onDelete: 'CASCADE',
+            },
           ],
         }),
         true,
@@ -84,7 +82,7 @@ export class CreateMovie1705127405464 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.startTransaction();
     try {
-      await queryRunner.dropTable('movie');
+      await queryRunner.dropTable('review');
 
       await queryRunner.commitTransaction();
     } catch (err) {

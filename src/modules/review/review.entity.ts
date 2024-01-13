@@ -8,30 +8,26 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Review } from '../review/review.entity';
+import { Movie } from '../movie/movie.entity';
 
-@Entity('movie')
-export class Movie extends BaseEntity {
+@Entity('review')
+export class Review extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', unique: true, nullable: false })
-  name: string;
-
-  @Column({ type: 'date', nullable: false })
-  release_date: Date;
+  @Column({ type: 'uuid', nullable: false })
+  movie_id: string;
 
   @Column({ type: 'uuid', nullable: false })
   user_id: string;
 
-  @Column({ type: 'numeric' })
-  average_rating: number;
+  @Column({ type: 'integer' })
+  rating: number;
 
   @Column({ type: 'integer' })
-  review_count: number;
+  comment: string;
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
@@ -46,6 +42,7 @@ export class Movie extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => Review, (review) => review.movie)
-  reviews: Review[];
+  @ManyToOne(() => Movie, (movie) => movie.id)
+  @JoinColumn({ name: 'movie_id' })
+  movie: Movie;
 }

@@ -9,6 +9,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core/constants';
 import { ErrorMessageSerializerFilter } from './filters/generic-error-handler.filter';
 import { MovieModule } from './modules/movie/movie.module';
 import { AuthGuard } from './guards/user.guard';
+import { ReviewModule } from './modules/review/review.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AuthGuard } from './guards/user.guard';
     }),
     UserModule,
     MovieModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [
