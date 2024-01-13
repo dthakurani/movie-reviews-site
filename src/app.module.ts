@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as morgan from 'morgan';
 import { AppService } from './app.service';
+import { UserModule } from './modules/user/user.module';
+import { APP_FILTER } from '@nestjs/core/constants';
+import { ErrorMessageSerializerFilter } from './filters/generic-error-handler.filter';
 
 @Module({
   imports: [
@@ -24,9 +27,13 @@ import { AppService } from './app.service';
         autoLoadEntities: true,
       }),
     }),
+    UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_FILTER, useClass: ErrorMessageSerializerFilter },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
